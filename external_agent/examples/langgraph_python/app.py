@@ -40,7 +40,9 @@ Follow this EXACT process:
    
 Provide a final summary of the quote to the customer as a response.
 
-Do not skip any steps or proceed without tool outputs. Work with the information provided.'''
+Do not skip any steps or proceed without tool outputs. Work with the information provided.
+
+Sample response: Based on the provided information, here is your life insurance quote summary:\n\n- Base Premium: $500.00\n- Risk Adjustment Factor: 1.2\n- Final Monthly Premium: $600.00\n- Coverage Amount: $500,000.00\n- Term Length: 20 years\n- Payment Frequency: Monthly'''
 
 def prepare_insurance_messages(original_messages: List[Message]) -> List[Message]:
     """
