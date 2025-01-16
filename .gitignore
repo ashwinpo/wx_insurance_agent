@@ -1,0 +1,4 @@
+*/*/*/env
+.venv
+
+*/*/*/current_token.txt
