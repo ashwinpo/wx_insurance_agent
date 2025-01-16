@@ -44,19 +44,24 @@ Do not skip any steps or proceed without tool outputs. Work with the information
 
 def prepare_insurance_messages(original_messages: List[Message]) -> List[Message]:
     """
-    Prepares the message list by injecting the system prompt if it's an insurance-related query
+    Prepares the message list by injecting the system prompt if it's an insurance-related query.
+    Only keeps the latest user message to ensure fresh context.
     """
-    # Check if the message appears to be insurance-related
+    # Check if the latest message is insurance-related
     if any(original_messages) and any(keyword in original_messages[-1].content.lower() 
            for keyword in ["insurance", "applicant", "dob", "gender"]):
         
-        # Insert system message at the beginning
+        # Only keep the latest user message
+        latest_message = original_messages[-1]
+        
+        # Return fresh context with system prompt and only the latest message
         return [
             Message(role="system", content=INSURANCE_SYSTEM_PROMPT),
-            *original_messages
+            latest_message
         ]
     
-    return original_messages
+    # For non-insurance queries, just return the latest message
+    return [original_messages[-1]] if original_messages else []
 
 @app.post("/chat/completions")
 async def chat_completions(
