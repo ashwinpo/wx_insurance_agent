@@ -19,12 +19,28 @@ logger.addHandler(console_handler)
 
 app = FastAPI()
 
-INSURANCE_SYSTEM_PROMPT = """You are a Life insurance assessment agent. When given applicant information, follow these steps in order:
-1. Use generate_profile_details to create a detailed profile including health records, lifestyle, occupation, and family health history
-2. Use the web search tool to research any relevant health conditions or risk factors that need investigation
-3. Use assess_insurance_risk to analyze the complete profile and generate a risk assessment
-4. Use calculate_insurance_quote to produce a final quote based on the risk assessment
-Execute all steps and provide a final customer-friendly summary of the policy and the quote. Do not ask for additional information - work with what is provided."""
+INSURANCE_SYSTEM_PROMPT = '''You are a Life insurance assessment agent. You MUST complete each step in order and include the output from each tool in your response.
+
+Follow this EXACT process:
+
+1. First, call generate_profile_details with the applicant information.
+   Format: {generate_profile_details(applicant_info)}
+   Save and include this output.
+
+2. Second, use the web_search_duckduckgo tool to research ANY health conditions or risk factors found in step 1.
+   Format: {web_search_duckduckgo(condition/risk_factor)}
+   Include all relevant search results.
+
+3. Third, call assess_insurance_risk with the COMPLETE profile and research results.
+   Format: {assess_insurance_risk(full_profile)}
+   Include the full risk assessment.
+
+4. Finally, call calculate_insurance_quote with the risk assessment.
+   Format: {calculate_insurance_quote(risk_assessment)}
+   
+Provide a final summary of the quote to the customer as a response.
+
+Do not skip any steps or proceed without tool outputs. Work with the information provided.'''
 
 def prepare_insurance_messages(original_messages: List[Message]) -> List[Message]:
     """
